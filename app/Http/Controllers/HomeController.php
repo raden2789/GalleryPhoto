@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Models\Album;
 use App\Models\GalerImage;
+use Illuminate\Http\Request;
 use Intervention\Image\Facades\Image;
+
 class HomeController extends Controller
 {
     /**
@@ -24,6 +26,7 @@ class HomeController extends Controller
      */
     public function index(Request $request)
     {
+        $album = Album::all();
         $query=GalerImage::where('user_id',auth()->id());
         if($request->category){
           $query->where('category',$request->category);
@@ -36,8 +39,8 @@ class HomeController extends Controller
             $query->orderBy('created_at','DESC');
         }
 
-        $data['images']=$query->paginate(2);
+        $data['images']=$query->paginate(4);
 
-        return view('home',$data);
+        return view('home',$data,['album' => $album]);
     }
 }
